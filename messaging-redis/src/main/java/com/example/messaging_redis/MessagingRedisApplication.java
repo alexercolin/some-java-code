@@ -15,49 +15,49 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @SpringBootApplication
 public class MessagingRedisApplication {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessagingRedisApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessagingRedisApplication.class);
 
-	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
+    @Bean
+    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+                                            MessageListenerAdapter listenerAdapter) {
 
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
 
-		return container;
-	}
+        return container;
+    }
 
-	@Bean
-	MessageListenerAdapter listenerAdapter(Receiver receiver) {
-		return new MessageListenerAdapter(receiver, "receiveMessage");
-	}
+    @Bean
+    MessageListenerAdapter listenerAdapter(Receiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveMessage");
+    }
 
-	@Bean
-	Receiver receiver() {
-		return new Receiver();
-	}
+    @Bean
+    Receiver receiver() {
+        return new Receiver();
+    }
 
-	@Bean
-	StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
-		return new StringRedisTemplate(connectionFactory);
-	}
+    @Bean
+    StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
+        return new StringRedisTemplate(connectionFactory);
+    }
 
-	public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
-		ApplicationContext ctx = SpringApplication.run(MessagingRedisApplication.class, args);
+        ApplicationContext ctx = SpringApplication.run(MessagingRedisApplication.class, args);
 
-		StringRedisTemplate template = ctx.getBean(StringRedisTemplate.class);
-		Receiver receiver = ctx.getBean(Receiver.class);
+        StringRedisTemplate template = ctx.getBean(StringRedisTemplate.class);
+        Receiver receiver = ctx.getBean(Receiver.class);
 
-		while (receiver.getCount() == 0) {
+        while (receiver.getCount() == 0) {
 
-			LOGGER.info("Sending message...");
-			template.convertAndSend("chat", "Hello from Redis!");
-			Thread.sleep(500L);
-		}
+            LOGGER.info("Sending message...");
+            template.convertAndSend("chat", "Hello from Redis!");
+            Thread.sleep(500L);
+        }
 
-		System.exit(0);
-	}
+        System.exit(0);
+    }
 
 }
