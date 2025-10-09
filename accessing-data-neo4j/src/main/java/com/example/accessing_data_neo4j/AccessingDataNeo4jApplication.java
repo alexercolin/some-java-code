@@ -13,7 +13,8 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableNeo4jRepositories
-public class AccessingDataNeo4jApplication {
+public class
+AccessingDataNeo4jApplication {
 
 	private final static Logger log = LoggerFactory.getLogger(AccessingDataNeo4jApplication.class);
 
